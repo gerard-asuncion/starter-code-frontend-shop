@@ -78,21 +78,72 @@ var total = 0;
 function buy(id) {
     // 1. Loop for to the array products to get the item to add to cart
     // 2. Add found product to the cart array
+    const button = document.querySelector(".btn-outline-dark")
+    for(let i = 0; i < products.length; i++){
+        let product = products[i]
+        let idActual = product.id
+        let inCart = false
+        if(id == idActual){
+            for(let j = 0; j < cart.length; j++){
+                let cartProduct = cart[j]
+                if(product == cartProduct){
+                    inCart = true
+                }
+            }
+            if(inCart){
+                product.quantity += 1
+            } else {
+                product.quantity = 1
+                cart.push(product)
+            }
+        }
+    }
+    const actualizeCountProduct = () => {
+        let number = document.getElementById("count_product");
+        const count = cart.reduce((acum, current) => acum + current.quantity, 0);
+        number.innerHTML = `${count}`
+    }
+    actualizeCountProduct();
+    applyPromotionsCart();
+    calculateTotal();
+    printCart();
 }
 
 // Exercise 2
 function cleanCart() {
-
+    cart.splice(0, cart.length)
 }
 
 // Exercise 3
 function calculateTotal() {
     // Calculate total price of the cart using the "cartList" array
+    for(let i = 0; i < cart.length; i++){
+        let product = cart[i];
+        let productPrice = product.price;
+        if(product.quantity > 1){
+            if(product.subtotalWithDiscount == undefined){
+                productPrice = productPrice * product.quantity;
+            }else{
+                productPrice = product.subtotalWithDiscount * product.quantity;
+            }
+        }
+        total += productPrice;
+    }
+    console.log(total)
 }
 
 // Exercise 4
 function applyPromotionsCart() {
-    // Apply promotions to each item in the array "cart"
+    cart.forEach(item => {
+        if(item.id == 1 || item.id == 3){
+            if(item.quantity >= item.offer.number){
+                item.subtotalWithDiscount = item.price - (item.price * (item.offer.percent / 100));
+            } else {
+                item.subtotalWithDiscount = item.price;
+            }
+        }
+    })
+    console.log(cart)
 }
 
 // Exercise 5

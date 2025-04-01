@@ -78,7 +78,6 @@ var total = 0;
 function buy(id) {
     // 1. Loop for to the array products to get the item to add to cart
     // 2. Add found product to the cart array
-    const button = document.querySelector(".btn-outline-dark")
     for(let i = 0; i < products.length; i++){
         let product = products[i]
         let idActual = product.id
@@ -103,10 +102,18 @@ function buy(id) {
         const count = cart.reduce((acum, current) => acum + current.quantity, 0);
         number.innerHTML = `${count}`
     }
+    
+    const product = products.find(product => product.id == id);
+    let productId = product.id
+    let productName = product.name;
+    let productPrice = product.price;
+    let productQuantity = product.quantity;
+    let productWithDiscount = product.subtotalWithDiscount;
+
     actualizeCountProduct();
     applyPromotionsCart();
-    calculateTotal();
-    printCart();
+    const totalPrice = calculateTotal();
+    printCart(productId, productName, productPrice, productQuantity, productWithDiscount, totalPrice);
 }
 
 // Exercise 2
@@ -117,6 +124,7 @@ function cleanCart() {
 // Exercise 3
 function calculateTotal() {
     // Calculate total price of the cart using the "cartList" array
+    let total = 0;
     for(let i = 0; i < cart.length; i++){
         let product = cart[i];
         let productPrice = product.price;
@@ -129,7 +137,7 @@ function calculateTotal() {
         }
         total += productPrice;
     }
-    console.log(total)
+    return total
 }
 
 // Exercise 4
@@ -147,8 +155,44 @@ function applyPromotionsCart() {
 }
 
 // Exercise 5
-function printCart() {
+function printCart(productId, productName, productPrice, productQuantity, productWithDiscount, totalPrice) {
     // Fill the shopping cart modal manipulating the shopping cart dom
+
+    let existingProduct = document.getElementById("product-" + productId);
+    if(existingProduct) {
+        existingProduct.remove();
+    }
+    
+    if(isNaN(productWithDiscount)){
+        productWithDiscount = productPrice;
+    }
+    
+    let container = document.getElementById("cart_list");
+    
+    let newProduct = document.createElement('tr');
+    newProduct.id = "product-" + productId;
+    
+    let newName = document.createElement("th");
+    newName.textContent = productName;
+    newProduct.appendChild(newName);
+    
+    let newPrice = document.createElement("th");
+    newPrice.textContent = productPrice;
+    newProduct.appendChild(newPrice);
+
+    let newQuantity = document.createElement("th");
+    newQuantity.textContent = productQuantity;
+    newProduct.appendChild(newQuantity);
+
+    let newDiscount = document.createElement("th");
+    newDiscount.textContent = productWithDiscount;
+    newProduct.appendChild(newDiscount);
+
+    container.appendChild(newProduct);
+
+    let totalPriceResult = document.getElementById("total_price");
+    totalPriceResult.innerHTML = totalPrice;  
+
 }
 
 

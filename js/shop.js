@@ -112,8 +112,7 @@ function buy(id) {
 
     actualizeCountProduct();
     applyPromotionsCart();
-    const totalPrice = calculateTotal();
-    printCart(productId, productName, productPrice, productQuantity, productWithDiscount, totalPrice);
+    printCart(productId, productName, productPrice, productQuantity, productWithDiscount);
 }
 
 // Exercise 2
@@ -145,26 +144,27 @@ function applyPromotionsCart() {
     cart.forEach(item => {
         if(item.id == 1 || item.id == 3){
             if(item.quantity >= item.offer.number){
-                item.subtotalWithDiscount = item.price - (item.price * (item.offer.percent / 100));
+                let totalPrice = (item.price - (item.price * (item.offer.percent / 100))) * item.quantity;
+                item.subtotalWithDiscount = totalPrice.toFixed(2)
             } else {
-                item.subtotalWithDiscount = item.price;
+                let totalPrice = item.price * item.quantity;
+                item.subtotalWithDiscount = totalPrice.toFixed(2)
             }
+        } else {
+            let totalPrice = item.price * item.quantity;
+            item.subtotalWithDiscount = totalPrice.toFixed(2)
         }
     })
     console.log(cart)
 }
 
 // Exercise 5
-function printCart(productId, productName, productPrice, productQuantity, productWithDiscount, totalPrice) {
+function printCart(productId, productName, productPrice, productQuantity, productWithDiscount) {
     // Fill the shopping cart modal manipulating the shopping cart dom
 
     let existingProduct = document.getElementById("product-" + productId);
     if(existingProduct) {
         existingProduct.remove();
-    }
-    
-    if(isNaN(productWithDiscount)){
-        productWithDiscount = productPrice;
     }
     
     let container = document.getElementById("cart_list");
@@ -191,7 +191,9 @@ function printCart(productId, productName, productPrice, productQuantity, produc
     container.appendChild(newProduct);
 
     let totalPriceResult = document.getElementById("total_price");
-    totalPriceResult.innerHTML = totalPrice;  
+    totalPriceResult.innerHTML = 0;
+    const totalPrice = calculateTotal();
+    totalPriceResult.innerHTML = totalPrice;
 
 }
 

@@ -104,26 +104,28 @@ function buy(id) {
     }
     
     const product = products.find(product => product.id == id);
-    let productId = product.id
-    let productName = product.name;
-    let productPrice = product.price;
-    let productQuantity = product.quantity;
-    let productWithDiscount = product.subtotalWithDiscount;
-
+    
     actualizeCountProduct();
-    applyPromotionsCart();
-    printCart(productId, productName, productPrice, productQuantity, productWithDiscount);
+    applyPromotionsCart(product);
+    printCart(product);
+
+    console.log(cart)
 }
 
 // Exercise 2
 function cleanCart() {
-    
+
+    let number = document.getElementById("count_product");
+
     for(let i of cart){
         let productId = i.id;
         let product = document.getElementById("product-" + productId);
         product.remove();
     }
+
     cart.splice(0, cart.length);
+
+    number = 0;
 }
 
 // Exercise 3
@@ -147,27 +149,48 @@ function calculateTotal() {
 }
 
 // Exercise 4
-function applyPromotionsCart() {
-    cart.forEach(item => {
-        if(item.id == 1 || item.id == 3){
-            if(item.quantity >= item.offer.number){
-                let totalPrice = (item.price - (item.price * (item.offer.percent / 100))) * item.quantity;
-                item.subtotalWithDiscount = totalPrice.toFixed(2)
-            } else {
-                let totalPrice = item.price * item.quantity;
-                item.subtotalWithDiscount = totalPrice.toFixed(2)
-            }
+function applyPromotionsCart(product) {
+    // cart.forEach(item => {
+    //     let totalPrice = item.price * (item.quantity + 1);
+    //     if(item.id == 1 || item.id == 3){
+    //         if(item.quantity >= item.offer.number){
+    //             let totalDiscountPrice = (item.price - (item.price * (item.offer.percent / 100))) * item.quantity;
+    //             item.subtotalWithDiscount = totalDiscountPrice.toFixed(2)
+    //         } else {
+    //             item.subtotalWithDiscount = totalPrice.toFixed(2)
+    //         }
+    //     } else {
+    //         item.subtotalWithDiscount = totalPrice.toFixed(2)
+    //     }
+    // })
+    let productId = product.id
+    let productPrice = product.price;
+    let productQuantity = product.quantity;
+
+    let totalPrice = productPrice * productQuantity;
+
+    if(productId == 1 || productId == 3){
+        if(productQuantity == product.offer.number){
+            let totalDiscountPrice = (productPrice - (productPrice * (product.offer.percent / 100))) * productQuantity;
+            product.subtotalWithDiscount = totalDiscountPrice.toFixed(2);
         } else {
-            let totalPrice = item.price * item.quantity;
-            item.subtotalWithDiscount = totalPrice.toFixed(2)
+            product.subtotalWithDiscount = totalPrice.toFixed(2)
         }
-    })
-    console.log(cart)
+    } else {
+        product.subtotalWithDiscount = totalPrice.toFixed(2)
+    }
+
 }
 
 // Exercise 5
-function printCart(productId, productName, productPrice, productQuantity, productWithDiscount) {
+function printCart(product) {
     // Fill the shopping cart modal manipulating the shopping cart dom
+
+    let productId = product.id
+    let productName = product.name;
+    let productPrice = product.price;
+    let productQuantity = product.quantity;
+    let productWithDiscount = product.subtotalWithDiscount;
 
     let existingProduct = document.getElementById("product-" + productId);
     if(existingProduct) {
@@ -194,6 +217,14 @@ function printCart(productId, productName, productPrice, productQuantity, produc
     let newDiscount = document.createElement("th");
     newDiscount.textContent = productWithDiscount;
     newProduct.appendChild(newDiscount);
+
+    let newButton = document.createElement("th");
+    let theButton = document.createElement("button");
+    theButton.id = "button-for-product-id-" + productId;
+    theButton.textContent = "Remove"
+    newButton.appendChild(theButton);
+    newProduct.appendChild(newButton);
+
 
     container.appendChild(newProduct);
 

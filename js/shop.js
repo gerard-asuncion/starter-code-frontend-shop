@@ -117,7 +117,11 @@ function buy(id) {
 
 // Exercise 2
 function cleanCart() {
-    cart.splice(0, cart.length)
+    for(let i = cart.length; i > 0; i--){
+        let product = document.getElementById("product-" + i);
+        product.remove();
+    }
+    cart.splice(0, cart.length);
 }
 
 // Exercise 3
@@ -196,7 +200,6 @@ function printCart(productId, productName, productPrice, productQuantity, produc
     totalPriceResult.innerHTML = totalPrice;
 
 }
-
 
 // ** Nivell II **
 

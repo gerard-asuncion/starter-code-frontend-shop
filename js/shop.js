@@ -117,8 +117,10 @@ function buy(id) {
 
 // Exercise 2
 function cleanCart() {
-    for(let i = cart.length; i > 0; i--){
-        let product = document.getElementById("product-" + i);
+    
+    for(let i of cart){
+        let productId = i.id;
+        let product = document.getElementById("product-" + productId);
         product.remove();
     }
     cart.splice(0, cart.length);
@@ -140,6 +142,7 @@ function calculateTotal() {
         }
         total += productPrice;
     }
+    total = total.toFixed(2);
     return total
 }
 

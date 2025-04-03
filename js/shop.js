@@ -116,6 +116,10 @@ function buy(id) {
 function cleanCart() {
 
     let number = document.getElementById("count_product");
+    let totalPriceResult = document.getElementById("total_price");
+
+    number.innerHTML = 0;
+    totalPriceResult.innerHTML = 0;
 
     for(let i of cart){
         let productId = i.id;
@@ -125,7 +129,6 @@ function cleanCart() {
 
     cart.splice(0, cart.length);
 
-    number = 0;
 }
 
 // Exercise 3
@@ -150,19 +153,7 @@ function calculateTotal() {
 
 // Exercise 4
 function applyPromotionsCart(product) {
-    // cart.forEach(item => {
-    //     let totalPrice = item.price * (item.quantity + 1);
-    //     if(item.id == 1 || item.id == 3){
-    //         if(item.quantity >= item.offer.number){
-    //             let totalDiscountPrice = (item.price - (item.price * (item.offer.percent / 100))) * item.quantity;
-    //             item.subtotalWithDiscount = totalDiscountPrice.toFixed(2)
-    //         } else {
-    //             item.subtotalWithDiscount = totalPrice.toFixed(2)
-    //         }
-    //     } else {
-    //         item.subtotalWithDiscount = totalPrice.toFixed(2)
-    //     }
-    // })
+  
     let productId = product.id
     let productPrice = product.price;
     let productQuantity = product.quantity;
@@ -221,12 +212,18 @@ function printCart(product) {
     let newButton = document.createElement("th");
     let theButton = document.createElement("button");
     theButton.id = "button-for-product-id-" + productId;
-    theButton.textContent = "Remove"
+    theButton.classList.add("btn");
+    theButton.classList.add("btn-outline-dark");
+    theButton.textContent = "Remove";
     newButton.appendChild(theButton);
     newProduct.appendChild(newButton);
 
-
     container.appendChild(newProduct);
+
+    let removeButton = document.getElementById("button-for-product-id-" + productId);
+    removeButton.addEventListener("click", () => {
+        removeFromCart(productId);
+    });
 
     let totalPriceResult = document.getElementById("total_price");
     totalPriceResult.innerHTML = 0;
@@ -239,7 +236,23 @@ function printCart(product) {
 
 // Exercise 7
 function removeFromCart(id) {
+   
+        let existingProduct = document.getElementById("product-" + id);
+        let totalPriceResult = document.getElementById("total_price");
 
+        const productById = cart.find(product => product.id == id);
+
+        if(productById.quantity < 2){
+            existingProduct.remove();
+        } else {
+            productById.quantity -= 1;
+            applyPromotionsCart(productById);
+            printCart(productById);
+        }
+
+    if(cart.length == 1){
+        totalPriceResult.innerHTML = 0;
+    }
 }
 
 function open_modal() {

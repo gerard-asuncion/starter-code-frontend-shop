@@ -107,9 +107,6 @@ function buy(id) {
     
     actualizeCountProduct();
     applyPromotionsCart(product);
-    printCart(product);
-
-    console.log(cart)
 }
 
 // Exercise 2
@@ -134,21 +131,21 @@ function cleanCart() {
 // Exercise 3
 function calculateTotal() {
     // Calculate total price of the cart using the "cartList" array
-    let total = 0;
+
+    let totalPriceResult = document.getElementById("total_price");
+    
+    total = 0;
+    
+    let cartTotal = 0;
+    
     for(let i = 0; i < cart.length; i++){
-        let product = cart[i];
-        let productPrice = product.price;
-        if(product.quantity > 1){
-            if(product.subtotalWithDiscount == undefined){
-                productPrice = productPrice * product.quantity;
-            }else{
-                productPrice = product.subtotalWithDiscount * product.quantity;
-            }
-        }
-        total += productPrice;
+        let subtotal = cart[i].subtotalWithDiscount;
+        cartTotal += parseFloat(subtotal)
     }
-    total = total.toFixed(2);
-    return total
+    
+    total = cartTotal.toFixed(2)
+    
+    totalPriceResult.innerHTML = total;
 }
 
 // Exercise 4
@@ -161,74 +158,70 @@ function applyPromotionsCart(product) {
     let totalPrice = productPrice * productQuantity;
 
     if(productId == 1 || productId == 3){
-        if(productQuantity == product.offer.number){
+        if(productQuantity >= product.offer.number){
             let totalDiscountPrice = (productPrice - (productPrice * (product.offer.percent / 100))) * productQuantity;
             product.subtotalWithDiscount = totalDiscountPrice.toFixed(2);
         } else {
-            product.subtotalWithDiscount = totalPrice.toFixed(2)
+            product.subtotalWithDiscount = totalPrice.toFixed(2);
         }
     } else {
-        product.subtotalWithDiscount = totalPrice.toFixed(2)
+        product.subtotalWithDiscount = totalPrice.toFixed(2);
     }
 
 }
 
 // Exercise 5
-function printCart(product) {
+function printCart() {
     // Fill the shopping cart modal manipulating the shopping cart dom
 
-    let productId = product.id
-    let productName = product.name;
-    let productPrice = product.price;
-    let productQuantity = product.quantity;
-    let productWithDiscount = product.subtotalWithDiscount;
+    for(let product of cart){
 
-    let existingProduct = document.getElementById("product-" + productId);
-    if(existingProduct) {
-        existingProduct.remove();
-    }
-    
-    let container = document.getElementById("cart_list");
-    
-    let newProduct = document.createElement('tr');
-    newProduct.id = "product-" + productId;
-    
-    let newName = document.createElement("th");
-    newName.textContent = productName;
-    newProduct.appendChild(newName);
-    
-    let newPrice = document.createElement("th");
-    newPrice.textContent = productPrice;
-    newProduct.appendChild(newPrice);
+        let productId = product.id
+        let productName = product.name;
+        let productPrice = product.price;
+        let productQuantity = product.quantity;
+        let productWithDiscount = product.subtotalWithDiscount;
+        
+        let container = document.getElementById("cart_list");
+        
+        let newProduct = document.createElement('tr');
+        newProduct.id = "product-" + productId;
+        
+        let newName = document.createElement("th");
+        newName.textContent = productName;
+        newProduct.appendChild(newName);
+        
+        let newPrice = document.createElement("th");
+        newPrice.textContent = productPrice;
+        newProduct.appendChild(newPrice);
 
-    let newQuantity = document.createElement("th");
-    newQuantity.textContent = productQuantity;
-    newProduct.appendChild(newQuantity);
+        let newQuantity = document.createElement("th");
+        newQuantity.id = "product-quantity-id-" + productId;
+        newQuantity.textContent = productQuantity;
+        newProduct.appendChild(newQuantity);
 
-    let newDiscount = document.createElement("th");
-    newDiscount.textContent = productWithDiscount;
-    newProduct.appendChild(newDiscount);
+        let newDiscount = document.createElement("th");
+        newDiscount.id = "product-discount-id-" + productId;
+        newDiscount.textContent = productWithDiscount;
+        newProduct.appendChild(newDiscount);
 
-    let newButton = document.createElement("th");
-    let theButton = document.createElement("button");
-    theButton.id = "button-for-product-id-" + productId;
-    theButton.classList.add("btn");
-    theButton.classList.add("btn-outline-dark");
-    theButton.textContent = "Remove";
-    newButton.appendChild(theButton);
-    newProduct.appendChild(newButton);
+        let newButton = document.createElement("th");
+        let theButton = document.createElement("button");
+        theButton.id = "button-for-product-id-" + productId;
+        theButton.classList.add("btn");
+        theButton.classList.add("btn-outline-dark");
+        theButton.textContent = "Remove";
+        newButton.appendChild(theButton);
+        newProduct.appendChild(newButton);
 
-    container.appendChild(newProduct);
+        container.appendChild(newProduct);
 
-    let removeButton = document.getElementById("button-for-product-id-" + productId);
-    removeButton.addEventListener("click", () => {
-        removeFromCart(productId);
-    });
+        let removeButton = document.getElementById("button-for-product-id-" + productId);
+        removeButton.addEventListener("click", () => {
+            removeFromCart(productId);
+        });
 
-    let totalPriceResult = document.getElementById("total_price");
-    totalPriceResult.innerHTML = 0;
-    const totalPrice = calculateTotal();
-    totalPriceResult.innerHTML = totalPrice;
+    }    
 
 }
 
@@ -237,24 +230,45 @@ function printCart(product) {
 // Exercise 7
 function removeFromCart(id) {
    
-        let existingProduct = document.getElementById("product-" + id);
-        let totalPriceResult = document.getElementById("total_price");
+    let existingProduct = document.getElementById("product-" + id);
+    let totalPriceResult = document.getElementById("total_price");
+    let number = document.getElementById("count_product");
+    let productQuantityElement = document.getElementById("product-quantity-id-" + id);
+    let productWithDiscountElement = document.getElementById("product-discount-id-" + id);
 
-        const productById = cart.find(product => product.id == id);
+    const productById = cart.find(product => product.id == id);
+        
+    if(productById.quantity < 2){
+        
+        const index = cart.indexOf(productById);
+        cart.splice(index, 1);
 
-        if(productById.quantity < 2){
-            existingProduct.remove();
-        } else {
-            productById.quantity -= 1;
-            applyPromotionsCart(productById);
-            printCart(productById);
-        }
+        existingProduct.remove();
 
-    if(cart.length == 1){
-        totalPriceResult.innerHTML = 0;
+    } else {
+        
+        productById.quantity--
+        
+        applyPromotionsCart(productById);
+ 
+        productQuantityElement.textContent = productById.quantity;
+        productWithDiscountElement.textContent = productById.subtotalWithDiscount;
+
     }
+
+    if(cart.length >= 1){
+        number.innerHTML = cart.length;
+    }else{
+        number.innerHTML = 0;
+    }
+
+    total -= productById.subtotalWithDiscount;
+    
+    totalPriceResult.innerHTML = total.toFixed(2);
+
 }
 
-function open_modal() {
+function open_modal(){
     printCart();
+    calculateTotal();
 }

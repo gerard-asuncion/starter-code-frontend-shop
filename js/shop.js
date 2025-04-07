@@ -159,7 +159,9 @@ function applyPromotionsCart(product) {
 
     if(productId == 1 || productId == 3){
         if(productQuantity >= product.offer.number){
-            let totalDiscountPrice = (productPrice - (productPrice * (product.offer.percent / 100))) * productQuantity;
+            let discountPrice = (productPrice - (productPrice * (product.offer.percent / 100)))
+            let totalDiscountPrice = discountPrice * productQuantity;
+            product.price = discountPrice.toFixed(2);
             product.subtotalWithDiscount = totalDiscountPrice.toFixed(2);
         } else {
             product.subtotalWithDiscount = totalPrice.toFixed(2);
@@ -248,8 +250,6 @@ function removeFromCart(id) {
     } else {
         
         productById.quantity--
-        
-        applyPromotionsCart(productById);
  
         productQuantityElement.textContent = productById.quantity;
         productWithDiscountElement.textContent = productById.subtotalWithDiscount;
@@ -262,7 +262,11 @@ function removeFromCart(id) {
         number.innerHTML = 0;
     }
 
-    total -= productById.subtotalWithDiscount;
+    total -= productById.price;
+
+    if(total < 1){
+        total = 0;
+    }
     
     totalPriceResult.innerHTML = total.toFixed(2);
 

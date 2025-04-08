@@ -161,7 +161,7 @@ function applyPromotionsCart(product) {
         if(productQuantity >= product.offer.number){
             let discountPrice = (productPrice - (productPrice * (product.offer.percent / 100)))
             let totalDiscountPrice = discountPrice * productQuantity;
-            product.price = discountPrice.toFixed(2);
+            product.priceDiscount = discountPrice.toFixed(2);
             product.subtotalWithDiscount = totalDiscountPrice.toFixed(2);
         } else {
             product.subtotalWithDiscount = totalPrice.toFixed(2);
@@ -262,7 +262,7 @@ function removeFromCart(id) {
         number.innerHTML = 0;
     }
 
-    total -= productById.price;
+    total -= productById.priceDiscount;
 
     if(total < 1){
         total = 0;

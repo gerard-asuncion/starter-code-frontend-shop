@@ -115,8 +115,7 @@ function cleanCart() {
     let number = document.getElementById("count_product");
     let totalPriceResult = document.getElementById("total_price");
 
-    number.innerHTML = 0;
-    totalPriceResult.innerHTML = 0;
+    cart.splice(0, cart.length);
 
     for(let i of cart){
         let productId = i.id;
@@ -124,7 +123,8 @@ function cleanCart() {
         product.remove();
     }
 
-    cart.splice(0, cart.length);
+    number.innerHTML = 0;
+    totalPriceResult.innerHTML = 0;
 
 }
 
@@ -176,6 +176,10 @@ function applyPromotionsCart(product) {
 function printCart() {
     // Fill the shopping cart modal manipulating the shopping cart dom
 
+    let container = document.getElementById("cart_list");
+
+    container.innerHTML = ""
+
     for(let product of cart){
 
         let productId = product.id
@@ -183,8 +187,6 @@ function printCart() {
         let productPrice = product.price;
         let productQuantity = product.quantity;
         let productWithDiscount = product.subtotalWithDiscount;
-        
-        let container = document.getElementById("cart_list");
         
         let newProduct = document.createElement('tr');
         newProduct.id = "product-" + productId;

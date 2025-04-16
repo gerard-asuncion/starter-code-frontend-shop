@@ -115,13 +115,13 @@ function cleanCart() {
     let number = document.getElementById("count_product");
     let totalPriceResult = document.getElementById("total_price");
 
-    cart.splice(0, cart.length);
-
     for(let i of cart){
         let productId = i.id;
         let product = document.getElementById("product-" + productId);
         product.remove();
     }
+
+    cart.splice(0, cart.length);
 
     number.innerHTML = 0;
     totalPriceResult.innerHTML = 0;
@@ -234,43 +234,45 @@ function printCart() {
 // Exercise 7
 function removeFromCart(id) {
    
-    let existingProduct = document.getElementById("product-" + id);
-    let totalPriceResult = document.getElementById("total_price");
-    let number = document.getElementById("count_product");
-    let productQuantityElement = document.getElementById("product-quantity-id-" + id);
-    let productWithDiscountElement = document.getElementById("product-discount-id-" + id);
+    // let existingProduct = document.getElementById("product-" + id);
+    // let totalPriceResult = document.getElementById("total_price");
+    // let number = document.getElementById("count_product");
+    // let productQuantityElement = document.getElementById("product-quantity-id-" + id);
+    // let productWithDiscountElement = document.getElementById("product-discount-id-" + id);
 
-    const productById = cart.find(product => product.id == id);
-        
-    if(productById.quantity < 2){
-        
-        const index = cart.indexOf(productById);
-        cart.splice(index, 1);
+    // const productById = cart.find(product => product.id == id);
 
-        existingProduct.remove();
-
-    } else {
+    // console.log(productById)
         
-        productById.quantity--
+    // if(productById.quantity == 1){
+        
+    //     const index = cart.indexOf(productById);
+    //     cart.splice(index, 1);
+
+    //     existingProduct.remove();
+
+    // } else {
+        
+    //     productById.quantity--
  
-        productQuantityElement.textContent = productById.quantity;
-        productWithDiscountElement.textContent = productById.subtotalWithDiscount;
+    //     productQuantityElement.innerHTML = productById.quantity;
+    //     productWithDiscountElement.innerHTML = productById.subtotalWithDiscount;
 
-    }
+    // }
 
-    if(cart.length >= 1){
-        number.innerHTML = cart.length;
-    }else{
-        number.innerHTML = 0;
-    }
+    // if(cart.length >= 1){
+    //     number.innerHTML = cart.length;
+    // }else{
+    //     number.innerHTML = 0;
+    // }
 
-    total -= productById.priceDiscount;
+    // total -= productById.priceDiscount;
 
-    if(total < 1){
-        total = 0;
-    }
+    // if(total < 1){
+    //     total = 0;
+    // }
     
-    totalPriceResult.innerHTML = total.toFixed(2);
+    // totalPriceResult.innerHTML = total.toFixed(2);
 
 }
 

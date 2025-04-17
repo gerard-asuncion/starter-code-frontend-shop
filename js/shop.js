@@ -234,45 +234,54 @@ function printCart() {
 // Exercise 7
 function removeFromCart(id) {
    
-    // let existingProduct = document.getElementById("product-" + id);
-    // let totalPriceResult = document.getElementById("total_price");
-    // let number = document.getElementById("count_product");
-    // let productQuantityElement = document.getElementById("product-quantity-id-" + id);
-    // let productWithDiscountElement = document.getElementById("product-discount-id-" + id);
+    let existingProduct = document.getElementById("product-" + id);
+    let number = document.getElementById("count_product");
+    let productQuantityElement = document.getElementById("product-quantity-id-" + id);
+    let productWithDiscountElement = document.getElementById("product-discount-id-" + id);
 
-    // const productById = cart.find(product => product.id == id);
+    const productById = cart.find(product => product.id == id);
 
-    // console.log(productById)
+    if(productById.quantity > 1){
         
-    // if(productById.quantity == 1){
+        productById.quantity--
+
+        if(productById.priceDiscount != undefined && productById.quantity < productById.offer.number){
+
+            productById.subtotalWithDiscount = (productById.price * productById.quantity) + productById.price
+            productById.subtotalWithDiscount -= productById.price
+
+        } else if(productById.priceDiscount != undefined) {    
+
+            let substraction = productById.subtotalWithDiscount - productById.priceDiscount
+            productById.subtotalWithDiscount = (Math.round(substraction * 10) / 10).toFixed(2)
+         
+        } else {
+            productById.subtotalWithDiscount -= productById.price
+        }
+
+        productQuantityElement.innerHTML = `${productById.quantity}`
+
+        productWithDiscountElement.innerHTML = `${productById.subtotalWithDiscount}`
+
+    } else {
+
+        const index = cart.indexOf(productById);
         
-    //     const index = cart.indexOf(productById);
-    //     cart.splice(index, 1);
+        cart.splice(index, 1);
 
-    //     existingProduct.remove();
+        existingProduct.remove();
 
-    // } else {
-        
-    //     productById.quantity--
- 
-    //     productQuantityElement.innerHTML = productById.quantity;
-    //     productWithDiscountElement.innerHTML = productById.subtotalWithDiscount;
+    }
 
-    // }
+    let itemNumber = 0
 
-    // if(cart.length >= 1){
-    //     number.innerHTML = cart.length;
-    // }else{
-    //     number.innerHTML = 0;
-    // }
+    cart.forEach(item => {
+       itemNumber += item.quantity
+    })
 
-    // total -= productById.priceDiscount;
+    number.innerHTML = `${itemNumber}`
 
-    // if(total < 1){
-    //     total = 0;
-    // }
-    
-    // totalPriceResult.innerHTML = total.toFixed(2);
+    calculateTotal();
 
 }
 
